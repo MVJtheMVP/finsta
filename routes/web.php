@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,5 +17,30 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('posts.index', [
+        'posts' => Post::all(),
+    ]);
 });
+
+Route::get('posts/{post}', function ($id) {
+    return view('posts.show', [
+        'post' => Post::findorFail($id),
+    ]);
+});
+
+Route::get('users/{user}', function (User $user) {
+    return view('users.show', [
+        'user'=> $user,
+        'posts'=> $user->posts,
+    
+    ]);
+
+});
+
+Route::get('/dashboard', function () {
+    return view('posts.index', [
+        'posts' => Post::all(),
+    ]);
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
